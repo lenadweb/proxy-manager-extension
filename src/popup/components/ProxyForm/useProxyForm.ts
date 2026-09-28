@@ -4,7 +4,7 @@ import {
     parseProxyString,
 } from 'src/shared/parseProxyString';
 import { getConnectionSignature } from 'src/shared/proxy';
-import { ProxyProfile, ProxyScheme } from 'src/shared/types';
+import { ProxyIcon, ProxyProfile, ProxyScheme } from 'src/shared/types';
 import { FieldErrors, hasErrors, validateAddress } from 'src/shared/validation';
 import { FormSection, FormState } from 'src/popup/popupState';
 import {
@@ -87,6 +87,16 @@ export const useProxyForm = (
         });
     };
 
+    const selectIcon = (icon: ProxyIcon | null) => {
+        onFormChange({
+            ...form,
+            draft: { ...draft, icon },
+            openSections: openSections.filter(
+                (section) => section !== FormSection.Icon
+            ),
+        });
+    };
+
     const buildProfile = (): ProxyProfile | null => {
         const validationErrors = validateAddress(draft);
         setErrors(validationErrors);
@@ -104,6 +114,7 @@ export const useProxyForm = (
         fillFromProxyString,
         isSectionOpen,
         toggleFormSection,
+        selectIcon,
         buildProfile,
     };
 };

@@ -16,6 +16,28 @@ export enum ProxyControl {
     ControlledByThisExtension = 'controlled_by_this_extension',
 }
 
+export enum ProxyIconKind {
+    Symbol = 'symbol',
+    Country = 'country',
+}
+
+export enum SymbolIcon {
+    Globe = 'globe',
+    Shield = 'shield',
+    Briefcase = 'briefcase',
+    House = 'house',
+    Server = 'server',
+    Cloud = 'cloud',
+    Zap = 'zap',
+    Rocket = 'rocket',
+    Gamepad = 'gamepad',
+    Tv = 'tv',
+}
+
+export type ProxyIcon =
+    | { kind: ProxyIconKind.Symbol; symbol: SymbolIcon }
+    | { kind: ProxyIconKind.Country; code: string };
+
 export type ProxyProfile = {
     id: string;
     name: string;
@@ -25,6 +47,7 @@ export type ProxyProfile = {
     username: string;
     password: string;
     bypassList: string[];
+    icon: ProxyIcon | null;
 };
 
 export type ProxyState = {

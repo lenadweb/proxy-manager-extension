@@ -17,3 +17,8 @@ body {
     margin: 0;
     width: 360px;
 }
+
+@utility scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #51515c transparent;
+}

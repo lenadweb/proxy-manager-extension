@@ -1,6 +1,8 @@
-import { ProxyState } from 'src/shared/types';
+import { ProxyProfile, ProxyState } from 'src/shared/types';
 
 type StateKey = keyof ProxyState;
+
+type StoredProxy = Omit<ProxyProfile, 'icon'> & Partial<ProxyProfile>;
 
 export const DEFAULT_STATE: ProxyState = {
     proxies: [],
@@ -14,8 +16,19 @@ const STATE_KEYS = Object.keys(DEFAULT_STATE) as StateKey[];
 const isStateKey = (key: string): key is StateKey =>
     STATE_KEYS.some((stateKey) => stateKey === key);
 
-export const loadState = async (): Promise<ProxyState> =>
-    (await chrome.storage.local.get(DEFAULT_STATE)) as ProxyState;
+const normalizeProxy = (proxy: StoredProxy): ProxyProfile => ({
+    ...proxy,
+    icon: proxy.icon ?? null,
+});
+
+export const loadState = async (): Promise<ProxyState> => {
+    const state = (await chrome.storage.local.get(DEFAULT_STATE)) as Omit<
+        ProxyState,
+        'proxies'
+    > & { proxies: StoredProxy[] };
+
+    return { ...state, proxies: state.proxies.map(normalizeProxy) };
+};
 
 export const saveState = (patch: Partial<ProxyState>): Promise<void> =>
     chrome.storage.local.set(patch);

@@ -7,6 +7,7 @@ export enum Screen {
 }
 
 export enum FormSection {
+    Icon = 'icon',
     Auth = 'auth',
     Bypass = 'bypass',
 }

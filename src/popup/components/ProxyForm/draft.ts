@@ -1,7 +1,7 @@
 import { DEFAULT_BYPASS_LIST, DEFAULT_PORTS } from 'src/shared/constants';
 import { ParsedProxy } from 'src/shared/parseProxyString';
 import { parseBypassList, supportsAuth } from 'src/shared/proxy';
-import { ProxyProfile, ProxyScheme } from 'src/shared/types';
+import { ProxyIcon, ProxyProfile, ProxyScheme } from 'src/shared/types';
 
 export type ProxyDraft = {
     name: string;
@@ -11,6 +11,7 @@ export type ProxyDraft = {
     username: string;
     password: string;
     bypass: string;
+    icon: ProxyIcon | null;
 };
 
 export const createDraft = (proxy: ProxyProfile | null): ProxyDraft => ({
@@ -21,6 +22,7 @@ export const createDraft = (proxy: ProxyProfile | null): ProxyDraft => ({
     username: proxy?.username ?? '',
     password: proxy?.password ?? '',
     bypass: (proxy?.bypassList ?? DEFAULT_BYPASS_LIST).join('\n'),
+    icon: proxy?.icon ?? null,
 });
 
 export const getSchemePatch = (
@@ -61,5 +63,6 @@ export const draftToProfile = (draft: ProxyDraft, id: string): ProxyProfile => {
         username: canAuthenticate ? draft.username.trim() : '',
         password: canAuthenticate ? draft.password : '',
         bypassList: parseBypassList(draft.bypass),
+        icon: draft.icon ?? null,
     };
 };

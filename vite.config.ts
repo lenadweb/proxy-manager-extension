@@ -33,6 +33,7 @@ export default defineConfig(({ mode }) => ({
         outDir,
         emptyOutDir: true,
         modulePreload: false,
+        assetsInlineLimit: 0,
         sourcemap: mode === 'development' ? 'inline' : false,
         minify: mode === 'production',
         rolldownOptions: {

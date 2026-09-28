@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { t } from 'src/shared/i18n';
+import { isProxyConnected } from 'src/shared/proxy';
 import { ProxyProfile, ProxyState } from 'src/shared/types';
 import { Plus } from 'lucide-react';
 import EmptyState from './EmptyState';
@@ -8,12 +9,12 @@ import ProxyCard from './ProxyCard';
 type Props = {
     state: ProxyState;
     onAdd: () => void;
-    onSelect: (proxy: ProxyProfile) => void;
+    onToggle: (proxy: ProxyProfile) => void;
     onEdit: (proxy: ProxyProfile) => void;
     onDelete: (proxy: ProxyProfile) => void;
 };
 
-const ProxyList: FC<Props> = ({ state, onAdd, onSelect, onEdit, onDelete }) => {
+const ProxyList: FC<Props> = ({ state, onAdd, onToggle, onEdit, onDelete }) => {
     const hasProxies = state.proxies.length > 0;
 
     return (
@@ -39,9 +40,8 @@ const ProxyList: FC<Props> = ({ state, onAdd, onSelect, onEdit, onDelete }) => {
                         <ProxyCard
                             key={proxy.id}
                             proxy={proxy}
-                            isSelected={proxy.id === state.activeId}
-                            isEnabled={state.isEnabled}
-                            onSelect={() => onSelect(proxy)}
+                            isConnected={isProxyConnected(state, proxy.id)}
+                            onToggle={() => onToggle(proxy)}
                             onEdit={() => onEdit(proxy)}
                             onDelete={() => onDelete(proxy)}
                         />

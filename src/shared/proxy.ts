@@ -15,6 +15,9 @@ export const isValidPort = (port: number): boolean =>
 export const getActiveProxy = (state: ProxyState): ProxyProfile | null =>
     state.proxies.find((proxy) => proxy.id === state.activeId) ?? null;
 
+export const isProxyConnected = (state: ProxyState, id: string): boolean =>
+    state.isEnabled && state.activeId === id;
+
 export const getAppliedProxy = (state: ProxyState): ProxyProfile | null =>
     state.isEnabled ? getActiveProxy(state) : null;
 

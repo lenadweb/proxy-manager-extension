@@ -3,7 +3,7 @@ import { ProxyProfile } from 'src/shared/types';
 import {
     deleteProxy,
     saveProxy,
-    selectProxy,
+    toggleProxy,
     toggleEnabled,
 } from 'src/popup/actions';
 import { usePopupState } from 'src/popup/hooks/usePopupState';
@@ -57,7 +57,9 @@ const App: FC = () => {
                     <ProxyList
                         state={state}
                         onAdd={() => openForm(null)}
-                        onSelect={(proxy) => runAction(selectProxy(proxy.id))}
+                        onToggle={(proxy) =>
+                            runAction(toggleProxy(state, proxy.id))
+                        }
                         onEdit={openForm}
                         onDelete={(proxy) =>
                             runAction(deleteProxy(state, proxy.id))

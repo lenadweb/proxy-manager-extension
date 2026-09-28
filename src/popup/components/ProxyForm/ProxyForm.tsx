@@ -1,13 +1,13 @@
 import { FC, FormEvent, useState } from 'react';
-import { t } from 'src/shared/i18n';
 import { ProxyTestStatus } from 'src/shared/proxyTest';
-import { ProxyProfile } from 'src/shared/types';
+import { ProxyIconKind, ProxyProfile } from 'src/shared/types';
 import { FormSection, FormState } from 'src/popup/popupState';
-import Icon from 'src/popup/components/Icon';
+import { getFlagUrl } from 'src/popup/components/ProxyIcon/countries';
 import AuthSection from './AuthSection';
 import BypassSection from './BypassSection';
 import ConnectionSection from './ConnectionSection';
 import FormFooter, { PendingAction } from './FormFooter';
+import FormHeader from './FormHeader';
 import { useProxyForm } from './useProxyForm';
 import { useProxyTest } from './useProxyTest';
 
@@ -28,6 +28,7 @@ const ProxyForm: FC<Props> = ({ form, onFormChange, onSave, onCancel }) => {
         fillFromProxyString,
         isSectionOpen,
         toggleFormSection,
+        selectIcon,
         buildProfile,
     } = useProxyForm(form, onFormChange);
     const { result: testResult, runTest } = useProxyTest(connectionSignature);
@@ -81,31 +82,30 @@ const ProxyForm: FC<Props> = ({ form, onFormChange, onSave, onCancel }) => {
         if (profile) onSave(profile);
     };
 
+    const applyCountryIcon = (code: string) =>
+        selectIcon({ kind: ProxyIconKind.Country, code });
+
+    const canSuggestCountry = (code: string) =>
+        !draft.icon && getFlagUrl(code) !== null;
+
     return (
         <form
             onSubmit={handleSubmit}
             noValidate
             className="flex flex-1 flex-col"
         >
-            <div className="mb-5 flex items-center gap-3">
-                <button
-                    type="button"
-                    onClick={onCancel}
-                    aria-label={t('back')}
-                    className="flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full bg-black-700 text-black-200 transition-colors hover:bg-black-600 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white active:scale-95"
-                >
-                    <Icon name="back" />
-                </button>
-                <h1 className="text-[20px] font-medium">
-                    {t(isNew ? 'add_proxy' : 'edit_proxy')}
-                </h1>
-            </div>
+            <FormHeader isNew={isNew} onBack={onCancel} />
 
             <div className="space-y-2.5">
                 <ConnectionSection
                     draft={draft}
                     errors={errors}
                     isNew={isNew}
+                    isIconPickerOpen={isSectionOpen(FormSection.Icon)}
+                    onToggleIconPicker={() =>
+                        toggleFormSection(FormSection.Icon)
+                    }
+                    onIconSelect={selectIcon}
                     onChange={updateDraft}
                     onSchemeChange={changeScheme}
                     onProxyString={fillFromProxyString}
@@ -127,9 +127,10 @@ const ProxyForm: FC<Props> = ({ form, onFormChange, onSave, onCancel }) => {
             <FormFooter
                 pendingAction={pendingAction}
                 testResult={testResult}
-                onCancel={onCancel}
                 onTest={handleTest}
                 onSaveAnyway={handleSaveAnyway}
+                canSuggestCountry={canSuggestCountry}
+                onUseCountry={applyCountryIcon}
             />
         </form>
     );

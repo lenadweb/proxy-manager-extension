@@ -1,6 +1,8 @@
 import { FC, useState } from 'react';
+import { Eye, EyeOff, KeyRound } from 'lucide-react';
 import { t } from 'src/shared/i18n';
-import Icon from 'src/popup/components/Icon';
+import IconButton from 'src/popup/components/IconButton';
+import { TooltipAlign } from 'src/popup/components/Tooltip';
 import TextField from './TextField';
 
 type Props = {
@@ -11,27 +13,25 @@ type Props = {
 
 const PasswordField: FC<Props> = ({ value, isDisabled, onChange }) => {
     const [isVisible, setIsVisible] = useState(false);
-    const toggleLabel = t(isVisible ? 'hide_password' : 'show_password');
 
     return (
         <TextField
             label={t('field_password')}
+            icon={KeyRound}
             type={isVisible ? 'text' : 'password'}
             autoComplete="new-password"
             value={value}
             disabled={isDisabled}
             onChange={(event) => onChange(event.target.value)}
             trailing={
-                <button
-                    type="button"
-                    disabled={isDisabled}
-                    onClick={() => setIsVisible((visible) => !visible)}
-                    aria-label={toggleLabel}
-                    title={toggleLabel}
-                    className="flex size-8 cursor-pointer items-center justify-center rounded-lg text-black-400 transition-colors hover:text-white disabled:cursor-default disabled:opacity-40"
-                >
-                    <Icon name={isVisible ? 'eyeOff' : 'eye'} />
-                </button>
+                !isDisabled && (
+                    <IconButton
+                        icon={isVisible ? EyeOff : Eye}
+                        label={t(isVisible ? 'hide_password' : 'show_password')}
+                        tooltipAlign={TooltipAlign.End}
+                        onClick={() => setIsVisible((visible) => !visible)}
+                    />
+                )
             }
         />
     );

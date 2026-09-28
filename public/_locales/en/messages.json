@@ -17,18 +17,6 @@
   "disable_proxy": {
     "message": "Turn proxy off"
   },
-  "status_active": {
-    "message": "Proxy is on"
-  },
-  "status_direct": {
-    "message": "Proxy is off"
-  },
-  "status_direct_hint": {
-    "message": "Chrome uses its default connection settings"
-  },
-  "status_empty_hint": {
-    "message": "Add a proxy to get started"
-  },
   "status_controlled_other": {
     "message": "Another extension controls the proxy"
   },
@@ -175,5 +163,47 @@
   },
   "error_settings_locked": {
     "message": "Proxy settings are controlled by another extension or a policy, so the proxy can’t be tested."
+  },
+  "active_proxy": {
+    "message": "Active proxy"
+  },
+  "connection_section": {
+    "message": "Connection"
+  },
+  "auth_empty_summary": {
+    "message": "Not set"
+  },
+  "auth_unsupported_summary": {
+    "message": "Not available for SOCKS"
+  },
+  "bypass_summary": {
+    "message": "$COUNT$ rules",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "choose_icon": {
+    "message": "Choose icon"
+  },
+  "icons_tab": {
+    "message": "Icons"
+  },
+  "countries_tab": {
+    "message": "Countries"
+  },
+  "search_country": {
+    "message": "Search country"
+  },
+  "no_countries_found": {
+    "message": "No countries found"
+  },
+  "remove_icon": {
+    "message": "Remove icon"
+  },
+  "use_flag": {
+    "message": "Use flag"
   }
 }

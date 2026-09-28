@@ -1,10 +1,12 @@
 import { ClipboardEvent, FC } from 'react';
 import { DEFAULT_PORTS } from 'src/shared/constants';
 import { I18nKey, t } from 'src/shared/i18n';
-import { ProxyScheme } from 'src/shared/types';
+import { ProxyIcon, ProxyScheme } from 'src/shared/types';
 import { FieldError, FieldErrors, ValidatedField } from 'src/shared/validation';
-import Icon from 'src/popup/components/Icon';
+import { ClipboardPaste, Hash, Server } from 'lucide-react';
+import SectionTitle from 'src/popup/components/SectionTitle';
 import { ProxyDraft } from './draft';
+import NameField from './NameField';
 import SchemeSelector from './SchemeSelector';
 import TextField from './TextField';
 
@@ -12,6 +14,9 @@ type Props = {
     draft: ProxyDraft;
     errors: FieldErrors;
     isNew: boolean;
+    isIconPickerOpen: boolean;
+    onToggleIconPicker: () => void;
+    onIconSelect: (icon: ProxyIcon | null) => void;
     onChange: (patch: Partial<ProxyDraft>) => void;
     onSchemeChange: (scheme: ProxyScheme) => void;
     onProxyString: (value: string) => boolean;
@@ -34,6 +39,9 @@ const ConnectionSection: FC<Props> = ({
     draft,
     errors,
     isNew,
+    isIconPickerOpen,
+    onToggleIconPicker,
+    onIconSelect,
     onChange,
     onSchemeChange,
     onProxyString,
@@ -49,17 +57,21 @@ const ConnectionSection: FC<Props> = ({
     };
 
     return (
-        <div className="space-y-4 rounded-3xl bg-black-700 p-5">
-            <TextField
-                label={t('field_name')}
-                placeholder={t('field_name_placeholder')}
-                value={draft.name}
-                onChange={(event) => onChange({ name: event.target.value })}
+        <div className="space-y-4 rounded-3xl bg-black-700 p-4">
+            <SectionTitle icon={Server} title={t('connection_section')} />
+            <NameField
+                name={draft.name}
+                icon={draft.icon}
+                isPickerOpen={isIconPickerOpen}
+                onNameChange={(name) => onChange({ name })}
+                onIconSelect={onIconSelect}
+                onTogglePicker={onToggleIconPicker}
             />
             <SchemeSelector value={draft.scheme} onChange={onSchemeChange} />
             <div className="flex gap-2">
                 <TextField
                     label={t('field_host')}
+                    icon={Server}
                     placeholder="127.0.0.1"
                     autoFocus={isNew}
                     value={draft.host}
@@ -71,6 +83,7 @@ const ConnectionSection: FC<Props> = ({
                 />
                 <TextField
                     label={t('field_port')}
+                    icon={Hash}
                     placeholder={String(DEFAULT_PORTS[draft.scheme])}
                     inputMode="numeric"
                     maxLength={5}
@@ -81,12 +94,15 @@ const ConnectionSection: FC<Props> = ({
                             port: event.target.value.replace(NON_DIGITS, ''),
                         })
                     }
-                    containerClassName="w-24 shrink-0"
+                    containerClassName="w-28 shrink-0"
                     className="tabular-nums"
                 />
             </div>
-            <div className="flex items-start gap-2 text-black-400">
-                <Icon name="info" className="mt-0.5 size-3.5" />
+            <div className="flex items-start gap-2.5 rounded-xl bg-background/60 px-3 py-2.5 text-black-400">
+                <ClipboardPaste
+                    aria-hidden
+                    className="mt-px size-3.5 shrink-0 text-blue-light"
+                />
                 <p className="text-[11px] leading-relaxed">{t('paste_hint')}</p>
             </div>
         </div>

@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { ArrowRight, CircleAlert, CircleCheck } from 'lucide-react';
 import { t } from 'src/shared/i18n';
 import {
     FailedProxyTest,
@@ -7,28 +8,38 @@ import {
     ProxyTestStatus,
 } from 'src/shared/proxyTest';
 import { describeTestFailure } from 'src/popup/errorText';
-import Button, { ButtonSize } from 'src/popup/components/Button';
-import Icon from 'src/popup/components/Icon';
+import CountryFlag from 'src/popup/components/ProxyIcon/CountryFlag';
 
 type Props = {
     result: ProxyTestResult;
     onSaveAnyway: () => void;
+    canSuggestCountry: (countryCode: string) => boolean;
+    onUseCountry: (countryCode: string) => void;
 };
 
-const PassedTest: FC<{ result: PassedProxyTest }> = ({ result }) => {
+const linkClass =
+    'inline-flex cursor-pointer items-center gap-1 rounded text-[12px] font-medium text-blue-light transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-white';
+
+const PassedTest: FC<{
+    result: PassedProxyTest;
+    canSuggestCountry: Props['canSuggestCountry'];
+    onUseCountry: Props['onUseCountry'];
+}> = ({ result, canSuggestCountry, onUseCountry }) => {
     const details = [result.ip, result.country, `${result.latencyMs} ms`]
         .filter(Boolean)
         .join(' · ');
+    const country = result.country;
 
     return (
         <div
             role="status"
-            className="flex items-center gap-3 rounded-2xl bg-black-700 p-3"
+            className="flex items-center gap-3 rounded-2xl bg-black-700 px-3.5 py-3"
         >
-            <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-blue-accent/15 text-blue-light">
-                <Icon name="check" className="size-3.5" />
-            </span>
-            <div className="min-w-0">
+            <CircleCheck
+                aria-hidden
+                className="size-5 shrink-0 text-blue-light"
+            />
+            <div className="min-w-0 flex-1">
                 <p className="text-[13px] font-medium text-white-100">
                     {t('test_passed')}
                 </p>
@@ -36,6 +47,16 @@ const PassedTest: FC<{ result: PassedProxyTest }> = ({ result }) => {
                     {details}
                 </p>
             </div>
+            {country && canSuggestCountry(country) && (
+                <button
+                    type="button"
+                    onClick={() => onUseCountry(country)}
+                    className={`${linkClass} shrink-0`}
+                >
+                    <CountryFlag code={country} className="h-3 w-4.5" />
+                    {t('use_flag')}
+                </button>
+            )}
         </div>
     );
 };
@@ -49,11 +70,9 @@ const FailedTest: FC<{
     return (
         <div
             role="alert"
-            className="flex items-start gap-3 rounded-2xl bg-black-700 p-3"
+            className="flex items-start gap-3 rounded-2xl bg-black-700 px-3.5 py-3"
         >
-            <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-danger/15 text-danger">
-                <Icon name="alert" className="size-3.5" />
-            </span>
+            <CircleAlert aria-hidden className="size-5 shrink-0 text-danger" />
             <div className="min-w-0 flex-1">
                 <p className="text-[13px] font-medium text-white-100">
                     {t('test_failed')}
@@ -66,21 +85,31 @@ const FailedTest: FC<{
                         {detail}
                     </p>
                 )}
-                <Button
-                    size={ButtonSize.Small}
+                <button
+                    type="button"
                     onClick={onSaveAnyway}
-                    className="mt-2.5"
+                    className={`${linkClass} mt-2`}
                 >
                     {t('save_anyway')}
-                </Button>
+                    <ArrowRight aria-hidden className="size-3.5" />
+                </button>
             </div>
         </div>
     );
 };
 
-const TestResult: FC<Props> = ({ result, onSaveAnyway }) =>
+const TestResult: FC<Props> = ({
+    result,
+    onSaveAnyway,
+    canSuggestCountry,
+    onUseCountry,
+}) =>
     result.status === ProxyTestStatus.Passed ? (
-        <PassedTest result={result} />
+        <PassedTest
+            result={result}
+            canSuggestCountry={canSuggestCountry}
+            onUseCountry={onUseCountry}
+        />
     ) : (
         <FailedTest result={result} onSaveAnyway={onSaveAnyway} />
     );

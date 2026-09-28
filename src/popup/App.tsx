@@ -6,6 +6,7 @@ import {
     toggleProxy,
     toggleEnabled,
 } from 'src/popup/actions';
+import { useActionIconSync } from 'src/popup/hooks/useActionIconSync';
 import { usePopupState } from 'src/popup/hooks/usePopupState';
 import { useProxyControl } from 'src/popup/hooks/useProxyControl';
 import { useProxyState } from 'src/popup/hooks/useProxyState';
@@ -23,6 +24,7 @@ const App: FC = () => {
     const state = useProxyState();
     const control = useProxyControl();
     const [popupState, setPopupState] = usePopupState();
+    useActionIconSync(state?.proxies);
 
     if (!state || !popupState) return null;
 

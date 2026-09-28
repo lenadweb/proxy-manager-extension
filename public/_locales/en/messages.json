@@ -53,9 +53,6 @@
   "empty_text": {
     "message": "Add a proxy server once and switch to it with a single click."
   },
-  "use_proxy": {
-    "message": "Use this proxy"
-  },
   "edit": {
     "message": "Edit"
   },
@@ -164,9 +161,6 @@
   "error_settings_locked": {
     "message": "Proxy settings are controlled by another extension or a policy, so the proxy can’t be tested."
   },
-  "active_proxy": {
-    "message": "Active proxy"
-  },
   "connection_section": {
     "message": "Connection"
   },
@@ -205,5 +199,14 @@
   },
   "use_flag": {
     "message": "Use flag"
+  },
+  "connect": {
+    "message": "Connect"
+  },
+  "disconnect": {
+    "message": "Disconnect"
+  },
+  "connected": {
+    "message": "Connected"
   }
 }

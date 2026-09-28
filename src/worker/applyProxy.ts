@@ -1,22 +1,15 @@
+import { onActionIconsChange } from 'src/shared/actionIcons';
 import { buildProxyConfig, getAppliedProxy } from 'src/shared/proxy';
 import { loadState, onStateChange, saveState } from 'src/shared/storage';
 import { ProxyState } from 'src/shared/types';
+import { updateActionIcon } from './actionIcon';
 import { runExclusive } from './taskQueue';
 
-const BADGE_TEXT_ON = 'ON';
-const BADGE_BACKGROUND = '#2563EB';
-const BADGE_TEXT_COLOR = '#FFFFFF';
 const KEYS_AFFECTING_PROXY: (keyof ProxyState)[] = [
     'proxies',
     'activeId',
     'isEnabled',
 ];
-
-const updateBadge = async (isProxyOn: boolean): Promise<void> => {
-    await chrome.action.setBadgeBackgroundColor({ color: BADGE_BACKGROUND });
-    await chrome.action.setBadgeTextColor({ color: BADGE_TEXT_COLOR });
-    await chrome.action.setBadgeText({ text: isProxyOn ? BADGE_TEXT_ON : '' });
-};
 
 export const applyProxy = async (): Promise<void> => {
     const proxy = getAppliedProxy(await loadState());
@@ -30,7 +23,11 @@ export const applyProxy = async (): Promise<void> => {
         await chrome.proxy.settings.clear({ scope: 'regular' });
     }
 
-    await updateBadge(Boolean(proxy));
+    await updateActionIcon(proxy);
+};
+
+const refreshActionIcon = async (): Promise<void> => {
+    await updateActionIcon(getAppliedProxy(await loadState()));
 };
 
 const enqueue = (task: () => Promise<void>): void => {
@@ -49,6 +46,8 @@ export const registerProxySync = (): void => {
         );
         if (affectsProxy) enqueue(reapplyWithCleanError);
     });
+
+    onActionIconsChange(() => enqueue(refreshActionIcon));
 
     chrome.runtime.onStartup.addListener(() => enqueue(applyProxy));
     chrome.runtime.onInstalled.addListener(() => enqueue(applyProxy));

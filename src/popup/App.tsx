@@ -13,7 +13,7 @@ import { createFormState, LIST_STATE, Screen } from 'src/popup/popupState';
 import Header from 'src/popup/components/Header';
 import ProxyForm from 'src/popup/components/ProxyForm/ProxyForm';
 import ProxyList from 'src/popup/components/ProxyList/ProxyList';
-import StatusCard from 'src/popup/components/StatusCard/StatusCard';
+import Notice from 'src/popup/components/Notice/Notice';
 
 const runAction = (action: Promise<void>): void => {
     action.catch(console.error);
@@ -53,7 +53,7 @@ const App: FC = () => {
                         canToggle={state.proxies.length > 0}
                         onToggle={() => runAction(toggleEnabled(state))}
                     />
-                    <StatusCard state={state} control={control} />
+                    <Notice state={state} control={control} />
                     <ProxyList
                         state={state}
                         onAdd={() => openForm(null)}

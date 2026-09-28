@@ -12,17 +12,10 @@ export enum TooltipAlign {
     End = 'end',
 }
 
-export enum TooltipSize {
-    Small = 'small',
-    Large = 'large',
-}
-
 type Props = {
     label: string;
     placement?: TooltipPlacement;
     align?: TooltipAlign;
-    size?: TooltipSize;
-    className?: string;
     children: ReactNode;
 };
 
@@ -37,28 +30,20 @@ const ALIGN_CLASSES: Record<TooltipAlign, string> = {
     [TooltipAlign.End]: 'right-0',
 };
 
-const SIZE_CLASSES: Record<TooltipSize, string> = {
-    [TooltipSize.Small]: 'rounded-lg px-2 py-1 text-[10px] leading-4',
-    [TooltipSize.Large]: 'rounded-xl px-3 py-1.5 text-[12px] leading-5',
-};
-
 const Tooltip: FC<Props> = ({
     label,
     placement = TooltipPlacement.Top,
     align = TooltipAlign.Center,
-    size = TooltipSize.Small,
-    className,
     children,
 }) => (
-    <span className={cn('group/tooltip relative inline-flex', className)}>
+    <span className="group/tooltip relative inline-flex">
         {children}
         <span
             role="tooltip"
             className={cn(
-                'pointer-events-none absolute z-20 whitespace-nowrap bg-black-600 font-medium text-white-100 opacity-0 shadow-3xl transition duration-150 group-focus-within/tooltip:translate-y-0 group-focus-within/tooltip:opacity-100 group-hover/tooltip:translate-y-0 group-hover/tooltip:opacity-100',
+                'pointer-events-none absolute z-20 whitespace-nowrap rounded-lg bg-black-600 px-2 py-1 text-[10px] leading-4 font-medium text-white-100 opacity-0 shadow-3xl transition duration-150 group-focus-within/tooltip:translate-y-0 group-focus-within/tooltip:opacity-100 group-hover/tooltip:translate-y-0 group-hover/tooltip:opacity-100',
                 PLACEMENT_CLASSES[placement],
-                ALIGN_CLASSES[align],
-                SIZE_CLASSES[size]
+                ALIGN_CLASSES[align]
             )}
         >
             {label}

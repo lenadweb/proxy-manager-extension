@@ -1,0 +1,19 @@
+@config "../../../tailwind.config.ts";
+@import 'tailwindcss';
+
+@font-face {
+    font-family: 'Manrope';
+    src: url('../fonts/Manrope-VariableFont_wght.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: normal;
+}
+
+* {
+    box-sizing: border-box;
+    font-family: 'Manrope', sans-serif !important;
+}
+
+body {
+    margin: 0;
+    width: 360px;
+}

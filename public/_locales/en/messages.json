@@ -1,0 +1,179 @@
+{
+  "appName": {
+    "message": "Proxy Manager"
+  },
+  "appDescription": {
+    "message": "Switch between your HTTP, HTTPS and SOCKS proxies in one click, with authentication and bypass lists."
+  },
+  "actionTitle": {
+    "message": "Proxy Manager"
+  },
+  "proxy_manager": {
+    "message": "Proxy Manager"
+  },
+  "enable_proxy": {
+    "message": "Turn proxy on"
+  },
+  "disable_proxy": {
+    "message": "Turn proxy off"
+  },
+  "status_active": {
+    "message": "Proxy is on"
+  },
+  "status_direct": {
+    "message": "Proxy is off"
+  },
+  "status_direct_hint": {
+    "message": "Chrome uses its default connection settings"
+  },
+  "status_empty_hint": {
+    "message": "Add a proxy to get started"
+  },
+  "status_controlled_other": {
+    "message": "Another extension controls the proxy"
+  },
+  "status_controlled_other_hint": {
+    "message": "Disable it in chrome://extensions to use Proxy Manager"
+  },
+  "status_not_controllable": {
+    "message": "Proxy settings are locked"
+  },
+  "status_not_controllable_hint": {
+    "message": "They are managed by your administrator or system policy"
+  },
+  "auth_failed": {
+    "message": "The proxy rejected the username or password"
+  },
+  "dismiss": {
+    "message": "Dismiss"
+  },
+  "proxies": {
+    "message": "Proxies"
+  },
+  "add": {
+    "message": "Add"
+  },
+  "add_proxy": {
+    "message": "Add proxy"
+  },
+  "edit_proxy": {
+    "message": "Edit proxy"
+  },
+  "empty_title": {
+    "message": "No proxies yet"
+  },
+  "empty_text": {
+    "message": "Add a proxy server once and switch to it with a single click."
+  },
+  "use_proxy": {
+    "message": "Use this proxy"
+  },
+  "edit": {
+    "message": "Edit"
+  },
+  "delete": {
+    "message": "Delete"
+  },
+  "delete_confirm": {
+    "message": "Delete?"
+  },
+  "with_auth": {
+    "message": "With authentication"
+  },
+  "cancel": {
+    "message": "Cancel"
+  },
+  "save": {
+    "message": "Save"
+  },
+  "back": {
+    "message": "Back"
+  },
+  "field_name": {
+    "message": "Name"
+  },
+  "field_name_placeholder": {
+    "message": "e.g. Work or Germany"
+  },
+  "field_protocol": {
+    "message": "Protocol"
+  },
+  "field_host": {
+    "message": "Host"
+  },
+  "field_port": {
+    "message": "Port"
+  },
+  "paste_hint": {
+    "message": "Paste a full proxy string like user:pass@host:port into Host to fill every field"
+  },
+  "auth_section": {
+    "message": "Authentication"
+  },
+  "field_username": {
+    "message": "Username"
+  },
+  "field_password": {
+    "message": "Password"
+  },
+  "show_password": {
+    "message": "Show password"
+  },
+  "hide_password": {
+    "message": "Hide password"
+  },
+  "socks_auth_unsupported": {
+    "message": "Chrome doesn't support authentication for SOCKS proxies."
+  },
+  "bypass_section": {
+    "message": "Bypass list"
+  },
+  "bypass_hint": {
+    "message": "These hosts connect directly. One per line; wildcards like *.example.com and <local> work."
+  },
+  "error_required": {
+    "message": "Required"
+  },
+  "error_invalid_host": {
+    "message": "Invalid host"
+  },
+  "error_invalid_port": {
+    "message": "Use 1–65535"
+  },
+  "test": {
+    "message": "Test"
+  },
+  "testing": {
+    "message": "Testing…"
+  },
+  "checking": {
+    "message": "Checking…"
+  },
+  "save_anyway": {
+    "message": "Save anyway"
+  },
+  "test_passed": {
+    "message": "Proxy works"
+  },
+  "test_failed": {
+    "message": "Proxy check failed"
+  },
+  "error_tunnel_failed": {
+    "message": "The proxy refused to open the connection. Check the credentials and that it allows HTTPS."
+  },
+  "error_proxy_unreachable": {
+    "message": "Can't connect to the proxy server. Check the host and port."
+  },
+  "error_proxy_certificate": {
+    "message": "The proxy's TLS certificate is invalid."
+  },
+  "error_timeout": {
+    "message": "The proxy didn't respond in time."
+  },
+  "error_proxy_generic": {
+    "message": "The proxy returned an error."
+  },
+  "error_settings_locked": {
+    "message": "Proxy settings are controlled by another extension or a policy, so the proxy can’t be tested."
+  }
+}

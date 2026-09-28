@@ -205,8 +205,5 @@
   },
   "disconnect": {
     "message": "Disconnect"
-  },
-  "connected": {
-    "message": "Connected"
   }
 }

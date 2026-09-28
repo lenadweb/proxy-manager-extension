@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { t } from 'src/shared/i18n';
 import { ProxyProfile, ProxyState } from 'src/shared/types';
-import Icon from 'src/popup/components/Icon';
+import { Plus } from 'lucide-react';
 import EmptyState from './EmptyState';
 import ProxyCard from './ProxyCard';
 
@@ -28,7 +28,7 @@ const ProxyList: FC<Props> = ({ state, onAdd, onSelect, onEdit, onDelete }) => {
                         onClick={onAdd}
                         className="-my-1 flex cursor-pointer items-center gap-1 rounded-full px-2.5 py-1 text-[12px] font-medium text-blue-light transition-colors hover:bg-black-700 focus-visible:outline-2 focus-visible:outline-white active:scale-95"
                     >
-                        <Icon name="plus" className="size-3.5" />
+                        <Plus aria-hidden className="size-3.5" />
                         {t('add')}
                     </button>
                 )}

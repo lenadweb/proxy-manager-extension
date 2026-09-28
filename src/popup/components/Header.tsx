@@ -4,7 +4,10 @@ import { t } from 'src/shared/i18n';
 import Logo from 'src/assets/icons/logo.svg?react';
 import PowerOnIcon from 'src/assets/icons/power-on.svg?react';
 import PowerOffIcon from 'src/assets/icons/power-off.svg?react';
-import Tooltip from 'src/popup/components/Tooltip';
+import Tooltip, {
+    TooltipAlign,
+    TooltipPlacement,
+} from 'src/popup/components/Tooltip';
 
 type Props = {
     isEnabled: boolean;
@@ -29,8 +32,13 @@ const Header: FC<Props> = ({ isEnabled, canToggle, onToggle }) => {
                 </h1>
             </div>
             {canToggle && (
-                <Tooltip label={label}>
+                <Tooltip
+                    label={label}
+                    placement={TooltipPlacement.Bottom}
+                    align={TooltipAlign.End}
+                >
                     <button
+                        type="button"
                         onClick={onToggle}
                         aria-label={label}
                         aria-pressed={isEnabled}

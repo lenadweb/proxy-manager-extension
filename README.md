@@ -31,7 +31,6 @@ npm run build          # production build into ./dist
 npm run build:chrome   # bump version and pack release/build-chrome-<version>.zip
 npm run lint
 npm run typecheck
-npm test
 npm run format
 ```
 

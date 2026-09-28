@@ -6,8 +6,10 @@ compact popup.
 - One-click switching between saved proxies and a power toggle
 - Authentication for HTTP(S) proxies
 - Per-proxy bypass list
+- Optional icon or country flag for every proxy
+- Connection test before saving, checked in parallel via Cloudflare, AWS, ipinfo and ipify
 - Paste `user:pass@host:port`, `host:port:user:pass` or a full URL to fill the form
-- Status card with proxy errors and a warning when another extension controls the proxy
+- Readable proxy errors and a warning when another extension controls the proxy
 
 _Manifest V3 · React 19 · TypeScript · Tailwind CSS_
 

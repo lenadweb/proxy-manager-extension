@@ -36,6 +36,24 @@ npm run typecheck
 npm run format
 ```
 
+## Releases
+
+GitHub Actions run two workflows:
+
+- **CI** (`.github/workflows/ci.yml`) lints, type-checks, checks formatting and
+  builds on every push to `main` and every pull request.
+- **Release** (`.github/workflows/release.yml`) runs when `public/manifest.json`
+  changes on `main`. If there is no `v<version>` release yet, it builds the
+  extension and publishes a GitHub release with `build-chrome-<version>.zip`.
+
+To ship a new version, bump it, commit and push:
+
+```bash
+npm run bump
+git commit -am "update version"
+git push
+```
+
 ## Store listing
 
 Everything for the Chrome Web Store lives in `store/`:

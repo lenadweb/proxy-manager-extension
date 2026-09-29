@@ -1,12 +1,12 @@
 {
   "appName": {
-    "message": "Proxy Manager"
+    "message": "Proxy Switcher & Manager: HTTP, HTTPS, SOCKS5 Proxy with Auth"
   },
   "appDescription": {
-    "message": "Switch between your HTTP, HTTPS and SOCKS proxies in one click, with authentication and bypass lists."
+    "message": "Switch between HTTP, HTTPS and SOCKS5 proxies in one click. Save logins, test every proxy and set bypass rules. No account, no ads."
   },
   "actionTitle": {
-    "message": "Proxy Manager"
+    "message": "Proxy Manager: switch proxies"
   },
   "proxy_manager": {
     "message": "Proxy Manager"

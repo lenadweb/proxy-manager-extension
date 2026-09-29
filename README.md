@@ -36,6 +36,26 @@ npm run typecheck
 npm run format
 ```
 
+## Store listing
+
+Everything for the Chrome Web Store lives in `store/`:
+
+| Path                   | Content                                                  |
+| ---------------------- | -------------------------------------------------------- |
+| `store/description.md` | Name, summary, category and full description             |
+| `store/permissions.md` | Single purpose, permission justifications and data usage |
+| `store/assets/`        | Two screenshots, marquee and small promo tile            |
+| `store/promo/`         | Generator that renders the real popup into the store art |
+
+```bash
+npm run promo              # render every asset into store/assets
+npm run promo screenshot-2 # render one asset
+npm run promo:dev          # open http://localhost:5199/?shot=1 to tweak copy live
+```
+
+Query parameters: `?shot=1`, `?shot=2`, `?format=marquee`, `?format=tile`.
+Set `CHROME_PATH` if Chrome is not installed in the default location.
+
 ## Permissions
 
 | Permission                                           | Why                                    |

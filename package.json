@@ -14,6 +14,8 @@
     "bump": "node bumpVersion.js",
     "build": "tsc && vite build",
     "build:chrome": "node bumpVersion.js && npm run build",
+    "promo": "node store/promo/capture.js",
+    "promo:dev": "vite --config store/promo/vite.config.ts",
     "lint": "eslint .",
     "typecheck": "tsc",
     "format": "prettier --write ."

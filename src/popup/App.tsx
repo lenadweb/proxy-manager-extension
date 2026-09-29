@@ -38,7 +38,7 @@ const App: FC = () => {
     };
 
     return (
-        <main className="flex min-h-[480px] w-full flex-col bg-background p-3 pt-5 text-white">
+        <main className="flex min-h-[480px] w-[360px] flex-col bg-background p-3 pt-5 text-white">
             {popupState.screen === Screen.Form ? (
                 <ProxyForm
                     form={popupState.form}

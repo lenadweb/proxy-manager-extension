@@ -34,10 +34,14 @@ const NameField: FC<Props> = ({
                     aria-label={t('choose_icon')}
                     aria-expanded={isPickerOpen}
                     className={cn(
-                        'flex size-11 cursor-pointer items-center justify-center rounded-xl border transition-colors focus-visible:outline-2 focus-visible:outline-white',
-                        isPickerOpen
-                            ? 'border-blue-accent bg-background'
-                            : 'border-dashed border-black-500 bg-background hover:border-black-400'
+                        'flex size-11 cursor-pointer items-center justify-center rounded-xl border bg-background transition-colors focus-visible:outline-2 focus-visible:outline-white',
+                        {
+                            'border-blue-accent': isPickerOpen,
+                            'border-black-600 hover:border-black-500':
+                                !isPickerOpen && icon,
+                            'border-dashed border-black-500 hover:border-black-400':
+                                !isPickerOpen && !icon,
+                        }
                     )}
                 >
                     {icon ? (

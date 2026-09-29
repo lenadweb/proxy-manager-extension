@@ -1,0 +1,7 @@
+@import '../../src/assets/styles/index.css';
+@source '.';
+
+html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}

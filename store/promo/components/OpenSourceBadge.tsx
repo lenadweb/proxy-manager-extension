@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import cn from 'classnames';
-import GithubMark from '../assets/github.svg?react';
+import GithubMark from 'src/assets/icons/github.svg?react';
 import { OPEN_SOURCE_LABEL } from '../copy';
 
 export enum BadgeSize {

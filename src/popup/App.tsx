@@ -11,6 +11,7 @@ import { usePopupState } from 'src/popup/hooks/usePopupState';
 import { useProxyControl } from 'src/popup/hooks/useProxyControl';
 import { useProxyState } from 'src/popup/hooks/useProxyState';
 import { createFormState, LIST_STATE, Screen } from 'src/popup/popupState';
+import Footer from 'src/popup/components/Footer';
 import Header from 'src/popup/components/Header';
 import ProxyForm from 'src/popup/components/ProxyForm/ProxyForm';
 import ProxyList from 'src/popup/components/ProxyList/ProxyList';
@@ -67,6 +68,7 @@ const App: FC = () => {
                             runAction(deleteProxy(state, proxy.id))
                         }
                     />
+                    <Footer />
                 </>
             )}
         </main>

@@ -205,5 +205,8 @@
   },
   "disconnect": {
     "message": "Disconnect"
+  },
+  "view_on_github": {
+    "message": "View on GitHub"
   }
 }

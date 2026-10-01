@@ -28,7 +28,11 @@ Chrome only delivers proxy authentication challenges for URLs the extension has 
 
 ## Network requests
 
-The extension contacts the network on its own only when the user starts a proxy check (the Test button, or Save for a proxy that has not passed a check yet). The request goes through the proxy being tested to these services, and the first one that answers is used to show the exit IP address, country and latency:
+The extension contacts the network on its own in two cases.
+
+When the user connects to a proxy that has a username and password, the extension sends one request through that proxy to `https://www.gstatic.com/generate_204`, an empty response from Google. The proxy asks for its credentials on this request, the extension answers, and Chrome remembers them for the proxy. Pages then sign in right away, even if another installed extension cancels proxy sign-in prompts.
+
+When the user starts a proxy check (the Test button, or Save for a proxy that has not passed a check yet), the request goes through the proxy being tested to these services, and the first one that answers is used to show the exit IP address, country and latency:
 
 - `https://one.one.one.one/cdn-cgi/trace` (Cloudflare)
 - `https://checkip.amazonaws.com/` (Amazon Web Services)

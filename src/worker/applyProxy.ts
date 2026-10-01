@@ -3,6 +3,7 @@ import { buildProxyConfig, getAppliedProxy } from 'src/shared/proxy';
 import { loadState, onStateChange, saveState } from 'src/shared/storage';
 import { ProxyState } from 'src/shared/types';
 import { updateActionIcon } from './actionIcon';
+import { primeProxyCredentials } from './proxyAuthPrimer';
 import { runExclusive } from './taskQueue';
 
 const KEYS_AFFECTING_PROXY: (keyof ProxyState)[] = [
@@ -19,6 +20,7 @@ export const applyProxy = async (): Promise<void> => {
             value: buildProxyConfig(proxy),
             scope: 'regular',
         });
+        primeProxyCredentials(proxy);
     } else {
         await chrome.proxy.settings.clear({ scope: 'regular' });
     }

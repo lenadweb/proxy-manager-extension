@@ -52,7 +52,7 @@ Bring your own proxies. Proxy Manager does not sell or include proxy servers. It
 • Open source: the code is public, so you can check exactly what the extension does.
 • No account, no sign up, no ads, no analytics, no tracking.
 • Your proxies and passwords are stored only in the extension's local storage in your browser and are never sent to the developer.
-• The only requests Proxy Manager makes on its own are the proxy checks you start. They go through the proxy being tested to Cloudflare, Amazon AWS, ipinfo.io and ipify to learn the exit IP address.
+• Proxy Manager contacts the network on its own only through your proxy: one sign-in request when you connect to a proxy with a password, and the proxy checks you start, which ask Cloudflare, Amazon AWS, ipinfo.io and ipify for the exit IP address.
 • A half-filled form is remembered, so switching windows never loses your input.
 
 👩‍💻 Who it is for

@@ -7,9 +7,11 @@ compact popup.
 - Authentication for HTTP(S) proxies
 - Per-proxy bypass list
 - Optional icon or country flag for every proxy
-- Connection test before saving, checked in parallel via Cloudflare, AWS, ipinfo and ipify
+- Verified connection status with exit IP and latency, checked on activation and every minute
+- Isolated candidate tests via Cloudflare, AWS, ipinfo and ipify where the current route can be preserved
 - Paste `user:pass@host:port`, `host:port:user:pass` or a full URL to fill the form
-- Readable proxy errors and a warning when another extension controls the proxy
+- Readable proxy errors, automatic rechecks and recovery after worker/browser restarts
+- Conflict resolution with individually selected proxy extensions (optional management permission)
 
 _Manifest V3 · React 19 · TypeScript · Tailwind CSS_
 
@@ -76,11 +78,13 @@ Set `CHROME_PATH` if Chrome is not installed in the default location.
 
 ## Permissions
 
-| Permission                                           | Why                                    |
-| ---------------------------------------------------- | -------------------------------------- |
-| `proxy`                                              | Apply the selected proxy               |
-| `storage`                                            | Keep the proxy list                    |
-| `webRequest`, `webRequestAuthProvider`, `<all_urls>` | Answer proxy authentication challenges |
+| Permission                                           | Why                                                                       |
+| ---------------------------------------------------- | ------------------------------------------------------------------------- |
+| `proxy`                                              | Apply the selected proxy                                                  |
+| `storage`                                            | Keep profiles and observed connection state                               |
+| `alarms`                                             | Recheck the active connection every minute                                |
+| `management` (optional)                              | List proxy-capable extensions and disable only a user-selected competitor |
+| `webRequest`, `webRequestAuthProvider`, `<all_urls>` | Answer proxy authentication challenges                                    |
 
 ## Structure
 
@@ -90,5 +94,24 @@ Set `CHROME_PATH` if Chrome is not installed in the default location.
 | `src/worker` | Applies the active proxy, answers auth, reports proxy errors |
 | `src/shared` | Types, storage, parsing and validation used by both          |
 
-The popup only writes to `chrome.storage.local`; the service worker listens for
-changes and applies them through `chrome.proxy.settings`.
+The popup saves profiles to `chrome.storage.local` and sends diagnostic/control
+commands to the service worker. The worker serializes proxy-setting writes,
+verifies connectivity and publishes observed state to `chrome.storage.session`.
+
+## Connection reliability
+
+The power switch records the requested mode. A connected indicator requires
+verified ownership of Chrome's actual proxy settings and a successful network
+check through a non-bypassed endpoint. Stale results expire in the popup after
+90 seconds. Failed checks keep the requested proxy configured and retry every
+minute; the extension does not silently switch to DIRECT.
+
+Temporary candidate tests use a mandatory PAC and persist a recovery journal
+before changing settings. Unsupported external system/WPAD/PAC routes are not
+approximated: save the profile and enable it to verify its actual route instead.
+Chrome policy and extension priority cannot be overridden by repeated writes.
+Conflict resolution requests optional `management` access and lets the user
+choose an individual extension to disable; it stays disabled until manually
+re-enabled in Chrome.
+
+See [the detailed audit and limitations](docs/STABILITY.md).

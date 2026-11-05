@@ -6,6 +6,7 @@ import { dismissError } from 'src/popup/actions';
 import IconButton from 'src/popup/components/IconButton';
 import { TooltipAlign } from 'src/popup/components/Tooltip';
 import { getNotice, NoticeKind } from './getNotice';
+import ProxyConflict from './ProxyConflict';
 
 type Props = {
     state: ProxyState;
@@ -40,6 +41,9 @@ const Notice: FC<Props> = ({ state, control }) => {
                     <p className="mt-0.5 break-all text-[11px] text-black-400">
                         {notice.detail}
                     </p>
+                )}
+                {control === ProxyControl.ControlledByOtherExtensions && (
+                    <ProxyConflict />
                 )}
             </div>
             {isDismissible && (

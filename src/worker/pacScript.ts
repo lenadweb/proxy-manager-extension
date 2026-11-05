@@ -1,5 +1,6 @@
 import { formatAddress } from 'src/shared/proxy';
 import { ProxyProfile, ProxyScheme } from 'src/shared/types';
+import { bypassCondition, UnsupportedRoutingError } from './bypass';
 
 const PAC_PROXY_TYPES: Record<ProxyScheme, string> = {
     [ProxyScheme.Http]: 'PROXY',
@@ -8,7 +9,6 @@ const PAC_PROXY_TYPES: Record<ProxyScheme, string> = {
     [ProxyScheme.Socks5]: 'SOCKS5',
 };
 
-const LOCAL_HOSTS_PATTERN = '<local>';
 const DIRECT = 'DIRECT';
 
 const quote = (value: string): string => JSON.stringify(value);
@@ -16,20 +16,27 @@ const quote = (value: string): string => JSON.stringify(value);
 export const toPacProxy = (proxy: ProxyProfile): string =>
     `${PAC_PROXY_TYPES[proxy.scheme]} ${formatAddress(proxy)}`;
 
-const toBypassCondition = (pattern: string): string =>
-    pattern === LOCAL_HOSTS_PATTERN
-        ? 'isPlainHostName(host)'
-        : `shExpMatch(host, ${quote(pattern)})`;
-
-const buildFallbackRules = (fallback: ProxyProfile | null): string[] => {
-    if (!fallback) return [`return ${quote(DIRECT)};`];
-
-    const bypassConditions = fallback.bypassList.map(toBypassCondition);
+const buildFallbackRules = (fallback: chrome.proxy.ProxyConfig): string[] => {
+    if (fallback.mode === 'direct') return [`return ${quote(DIRECT)};`];
+    // System/WPAD/remote PAC routing cannot be reproduced inside another PAC.
+    // Refuse the diagnostic instead of replacing unrelated traffic with DIRECT.
+    if (fallback.mode !== 'fixed_servers' || !fallback.rules?.singleProxy) {
+        throw new UnsupportedRoutingError(fallback.mode);
+    }
+    const server = fallback.rules.singleProxy;
+    const proxy = toPacProxy({
+        scheme: (server.scheme ?? 'http') as ProxyScheme,
+        host: server.host,
+        port: server.port ?? (server.scheme === 'https' ? 443 : 80),
+    } as ProxyProfile);
+    const bypassConditions = (fallback.rules.bypassList ?? []).map(
+        bypassCondition
+    );
     const bypassRule = bypassConditions.length
         ? [`if (${bypassConditions.join(' || ')}) return ${quote(DIRECT)};`]
         : [];
 
-    return [...bypassRule, `return ${quote(toPacProxy(fallback))};`];
+    return [...bypassRule, `return ${quote(proxy)};`];
 };
 
 const toHostCondition = (testHosts: string[]): string =>
@@ -37,7 +44,7 @@ const toHostCondition = (testHosts: string[]): string =>
 
 export const buildTestPacScript = (
     candidate: ProxyProfile,
-    fallback: ProxyProfile | null,
+    fallback: chrome.proxy.ProxyConfig,
     testHosts: string[]
 ): string =>
     [

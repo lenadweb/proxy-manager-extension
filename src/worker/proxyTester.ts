@@ -1,127 +1,160 @@
-import { getAppliedProxy } from 'src/shared/proxy';
-import { isProxyLocked, readProxyControl } from 'src/shared/proxyControl';
+import { isProxyLocked } from 'src/shared/proxyControl';
 import {
     failedTest,
     isTestProxyMessage,
-    PassedProxyTest,
     ProxyTestFailure,
     ProxyTestResult,
-    ProxyTestStatus,
 } from 'src/shared/proxyTest';
-import { loadState } from 'src/shared/storage';
-import { ProxyProfile } from 'src/shared/types';
+import { ProxyControl, ProxyErrorCode, ProxyProfile } from 'src/shared/types';
+import { ConnectionStatus } from 'src/shared/connection';
 import { applyProxy } from './applyProxy';
+import { UnsupportedRoutingError } from './bypass';
+import {
+    beginProbe,
+    invalidateConnection,
+    markConnectionError,
+    publishConnection,
+} from './connectionState';
 import { buildTestPacScript } from './pacScript';
+import { checkAnyEndpoint } from './probe';
 import { runExclusive } from './taskQueue';
-import { TEST_ENDPOINTS, TEST_HOSTS, TestEndpoint } from './testEndpoints';
+import { TEST_HOSTS } from './testEndpoints';
+import {
+    desiredRouting,
+    recoverInterruptedTest,
+    rememberTest,
+} from './testRecovery';
 import {
     endTestSession,
-    getTestSession,
     recordTestError,
     startTestSession,
 } from './testSession';
 
-const TEST_TIMEOUT_MS = 10_000;
+let testPending = false;
 
-const toFailure = (isTimedOut: boolean): ProxyTestResult => {
-    const session = getTestSession();
-
-    if (session?.isAuthRejected) {
-        return failedTest(ProxyTestFailure.AuthRejected);
-    }
-    if (isTimedOut) return failedTest(ProxyTestFailure.Timeout);
-    return failedTest(ProxyTestFailure.Network, session?.errorCode ?? null);
-};
-
-const checkEndpoint = async (
-    { host, path, parse }: TestEndpoint,
-    signal: AbortSignal
-): Promise<PassedProxyTest> => {
-    const startedAt = performance.now();
-    const separator = path.includes('?') ? '&' : '?';
-    const response = await fetch(
-        `https://${host}${path}${separator}t=${Date.now()}`,
-        { cache: 'no-store', credentials: 'omit', signal }
-    );
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-    const exitInfo = parse(await response.text());
-    if (!exitInfo) throw new Error(`Unexpected response from ${host}`);
-
-    return {
-        status: ProxyTestStatus.Passed,
-        ...exitInfo,
-        latencyMs: Math.round(performance.now() - startedAt),
-    };
-};
-
-const checkAnyEndpoint = async (): Promise<ProxyTestResult> => {
-    const controller = new AbortController();
-    let isTimedOut = false;
-    const timeout = setTimeout(() => {
-        isTimedOut = true;
-        controller.abort();
-    }, TEST_TIMEOUT_MS);
-
+export const testProxy = async (
+    proxy: ProxyProfile
+): Promise<ProxyTestResult> => {
+    if (testPending) return failedTest(ProxyTestFailure.Busy);
+    testPending = true;
     try {
-        return await Promise.any(
-            TEST_ENDPOINTS.map((endpoint) =>
-                checkEndpoint(endpoint, controller.signal)
-            )
-        );
-    } catch {
-        return toFailure(isTimedOut);
+        return await runExclusive(async () => {
+            const original = await chrome.proxy.settings.get({
+                incognito: false,
+            });
+            if (isProxyLocked(original.levelOfControl as ProxyControl)) {
+                return failedTest(ProxyTestFailure.SettingsLocked);
+            }
+            let temporary: chrome.proxy.ProxyConfig;
+            try {
+                temporary = {
+                    mode: 'pac_script',
+                    pacScript: {
+                        mandatory: true,
+                        data: buildTestPacScript(
+                            proxy,
+                            original.value,
+                            TEST_HOSTS
+                        ),
+                    },
+                };
+            } catch (error) {
+                if (error instanceof UnsupportedRoutingError) {
+                    return failedTest(ProxyTestFailure.UnsupportedRouting);
+                }
+                throw error;
+            }
+
+            invalidateConnection();
+            await publishConnection({ status: ConnectionStatus.Connecting });
+            const controller = beginProbe();
+            const desired = await desiredRouting();
+            // Persist before modifying routing, so a killed MV3 worker or browser
+            // restart cannot strand the browser on a diagnostic PAC script.
+            await rememberTest({
+                original: original.value,
+                owned:
+                    original.levelOfControl ===
+                    ProxyControl.ControlledByThisExtension,
+                temporary,
+            });
+            startTestSession(proxy);
+            const runDiagnostic = async (): Promise<ProxyTestResult> => {
+                await chrome.proxy.settings.set({
+                    value: temporary,
+                    scope: 'regular',
+                });
+                const applied = await chrome.proxy.settings.get({
+                    incognito: false,
+                });
+                if (
+                    applied.levelOfControl !==
+                        ProxyControl.ControlledByThisExtension ||
+                    applied.value.pacScript?.data !== temporary.pacScript?.data
+                ) {
+                    return failedTest(ProxyTestFailure.SettingsLocked);
+                }
+                const result = await checkAnyEndpoint(controller.signal);
+                const final = await chrome.proxy.settings.get({
+                    incognito: false,
+                });
+                if (
+                    controller.signal.aborted ||
+                    (await desiredRouting()) !== desired
+                ) {
+                    return failedTest(ProxyTestFailure.Cancelled);
+                }
+                if (
+                    final.levelOfControl !==
+                        ProxyControl.ControlledByThisExtension ||
+                    final.value.pacScript?.data !== temporary.pacScript?.data
+                ) {
+                    return failedTest(ProxyTestFailure.SettingsLocked);
+                }
+                return result;
+            };
+            return runDiagnostic().finally(async () => {
+                controller.abort();
+                try {
+                    await recoverInterruptedTest();
+                } catch (error) {
+                    await markConnectionError(ProxyErrorCode.ApplyFailed);
+                    // A failed restore overrides a passed diagnostic. Keep the
+                    // recovery journal so startup can retry it.
+                    throw error;
+                } finally {
+                    endTestSession();
+                }
+                // Desired state may have changed while the test was in flight.
+                await applyProxy(true);
+            });
+        });
     } finally {
-        clearTimeout(timeout);
-        controller.abort();
+        testPending = false;
     }
 };
-
-const routeTestTrafficThrough = async (proxy: ProxyProfile): Promise<void> => {
-    const fallback = getAppliedProxy(await loadState());
-
-    await chrome.proxy.settings.set({
-        value: {
-            mode: 'pac_script',
-            pacScript: {
-                data: buildTestPacScript(proxy, fallback, TEST_HOSTS),
-            },
-        },
-        scope: 'regular',
-    });
-};
-
-const testProxy = (proxy: ProxyProfile): Promise<ProxyTestResult> =>
-    runExclusive(async () => {
-        if (isProxyLocked(await readProxyControl())) {
-            return failedTest(ProxyTestFailure.SettingsLocked);
-        }
-
-        startTestSession(proxy);
-        try {
-            await routeTestTrafficThrough(proxy);
-            return await checkAnyEndpoint();
-        } finally {
-            endTestSession();
-            await applyProxy();
-        }
-    });
 
 export const registerProxyTester = (): void => {
-    chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
-        if (!isTestProxyMessage(message)) return false;
-
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+        if (sender.id !== chrome.runtime.id || !isTestProxyMessage(message))
+            return false;
         testProxy(message.proxy)
             .then(sendResponse)
             .catch((error) => {
-                console.error(error);
+                console.error('Proxy test failed', error);
                 sendResponse(failedTest(ProxyTestFailure.Network));
             });
         return true;
     });
-
     chrome.webRequest.onErrorOccurred.addListener(
-        ({ error }) => recordTestError(error),
+        ({ error, url, initiator }) => {
+            if (
+                initiator === chrome.runtime.getURL('').replace(/\/$/, '') &&
+                new URL(url).searchParams.has('pm_probe') &&
+                error !== 'net::ERR_ABORTED'
+            )
+                recordTestError(error);
+        },
         { urls: TEST_HOSTS.map((host) => `https://${host}/*`) }
     );
 };

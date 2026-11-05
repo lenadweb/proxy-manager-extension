@@ -26,6 +26,9 @@ const TEST_FAILURE_MESSAGES: Record<
     [ProxyTestFailure.Timeout]: 'error_timeout',
     [ProxyTestFailure.AuthRejected]: 'auth_failed',
     [ProxyTestFailure.SettingsLocked]: 'error_settings_locked',
+    [ProxyTestFailure.Busy]: 'error_test_busy',
+    [ProxyTestFailure.Cancelled]: 'error_test_cancelled',
+    [ProxyTestFailure.UnsupportedRouting]: 'error_test_routing',
 };
 
 const describeNetError = (errorCode: string | null): ErrorText => ({
@@ -35,10 +38,20 @@ const describeNetError = (errorCode: string | null): ErrorText => ({
     detail: errorCode,
 });
 
-export const describeProxyError = (errorCode: string): ErrorText =>
-    errorCode === ProxyErrorCode.AuthFailed
-        ? { message: t('auth_failed'), detail: null }
+const ERROR_MESSAGES: Partial<Record<ProxyErrorCode, I18nKey>> = {
+    [ProxyErrorCode.AuthFailed]: 'auth_failed',
+    [ProxyErrorCode.ApplyFailed]: 'error_apply_failed',
+    [ProxyErrorCode.SettingsLocked]: 'error_settings_locked',
+    [ProxyErrorCode.VerificationFailed]: 'error_verification_failed',
+    [ProxyErrorCode.NoProbeRoute]: 'error_no_probe_route',
+};
+
+export const describeProxyError = (errorCode: string): ErrorText => {
+    const message = ERROR_MESSAGES[errorCode as ProxyErrorCode];
+    return message
+        ? { message: t(message), detail: null }
         : describeNetError(errorCode);
+};
 
 export const describeTestFailure = ({
     failure,

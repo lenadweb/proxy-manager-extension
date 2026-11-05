@@ -14,11 +14,33 @@ type IpJson = {
     country?: unknown;
 };
 
-const IP_ADDRESS = /^[0-9a-f.:]+$/i;
+export const isIpAddress = (value: string): boolean => {
+    if (value.includes(':')) {
+        if (!/^[0-9a-f:.]+$/i.test(value)) return false;
+        try {
+            return new URL(`http://[${value}]/`).hostname.startsWith('[');
+        } catch {
+            return false;
+        }
+    }
+    const octets = value.split('.');
+    return (
+        octets.length === 4 &&
+        octets.every(
+            (part) => /^(0|[1-9][0-9]{0,2})$/.test(part) && Number(part) <= 255
+        )
+    );
+};
 
 const toExitInfo = (ip: unknown, country: unknown = null): ExitInfo | null =>
-    typeof ip === 'string' && IP_ADDRESS.test(ip)
-        ? { ip, country: typeof country === 'string' ? country : null }
+    typeof ip === 'string' && isIpAddress(ip)
+        ? {
+              ip,
+              country:
+                  typeof country === 'string' && /^[a-z]{2}$/i.test(country)
+                      ? country.toUpperCase()
+                      : null,
+          }
         : null;
 
 const readKeyValue = (body: string, key: string): string | null =>

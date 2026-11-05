@@ -7,6 +7,10 @@ export enum ProxyScheme {
 
 export enum ProxyErrorCode {
     AuthFailed = 'AUTH_FAILED',
+    SettingsLocked = 'SETTINGS_LOCKED',
+    ApplyFailed = 'APPLY_FAILED',
+    VerificationFailed = 'VERIFICATION_FAILED',
+    NoProbeRoute = 'NO_PROBE_ROUTE',
 }
 
 export enum ProxyControl {

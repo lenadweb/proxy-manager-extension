@@ -6,13 +6,26 @@ export const useProxyControl = (): ProxyControl | null => {
     const [control, setControl] = useState<ProxyControl | null>(null);
 
     useEffect(() => {
+        let disposed = false;
+        let revision = 0;
         const syncControl = () => {
-            readProxyControl().then(setControl).catch(console.error);
+            const request = ++revision;
+            readProxyControl()
+                .then((value) => {
+                    if (!disposed && request === revision) setControl(value);
+                })
+                .catch((error) => {
+                    if (!disposed && request === revision) setControl(null);
+                    console.error(error);
+                });
         };
 
-        syncControl();
         chrome.proxy.settings.onChange.addListener(syncControl);
-        return () => chrome.proxy.settings.onChange.removeListener(syncControl);
+        syncControl();
+        return () => {
+            disposed = true;
+            chrome.proxy.settings.onChange.removeListener(syncControl);
+        };
     }, []);
 
     return control;

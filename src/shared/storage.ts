@@ -1,4 +1,5 @@
 import { ProxyProfile, ProxyState } from 'src/shared/types';
+import { isValidProfile } from './validation';
 
 type StateKey = keyof ProxyState;
 
@@ -27,7 +28,12 @@ export const loadState = async (): Promise<ProxyState> => {
         'proxies'
     > & { proxies: StoredProxy[] };
 
-    return { ...state, proxies: state.proxies.map(normalizeProxy) };
+    return {
+        ...state,
+        proxies: Array.isArray(state.proxies)
+            ? state.proxies.filter(isValidProfile).map(normalizeProxy)
+            : [],
+    };
 };
 
 export const saveState = (patch: Partial<ProxyState>): Promise<void> =>

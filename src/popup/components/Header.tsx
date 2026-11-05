@@ -11,11 +11,17 @@ import Tooltip, {
 
 type Props = {
     isEnabled: boolean;
+    isConnected?: boolean;
     canToggle: boolean;
     onToggle: () => void;
 };
 
-const Header: FC<Props> = ({ isEnabled, canToggle, onToggle }) => {
+const Header: FC<Props> = ({
+    isEnabled,
+    isConnected = false,
+    canToggle,
+    onToggle,
+}) => {
     const label = t(isEnabled ? 'disable_proxy' : 'enable_proxy');
 
     return (
@@ -24,7 +30,7 @@ const Header: FC<Props> = ({ isEnabled, canToggle, onToggle }) => {
                 <Logo
                     className={cn(
                         'size-8 transition duration-150',
-                        !isEnabled && 'grayscale'
+                        !isConnected && 'grayscale'
                     )}
                 />
                 <h1 className="text-[20px] font-medium">

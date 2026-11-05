@@ -21,7 +21,7 @@
     "message": "Another extension controls the proxy"
   },
   "status_controlled_other_hint": {
-    "message": "Disable it in chrome://extensions to use Proxy Manager"
+    "message": "Resolve the conflict below, or disable the other proxy extension in chrome://extensions."
   },
   "status_not_controllable": {
     "message": "Proxy settings are locked"
@@ -123,16 +123,16 @@
     "message": "Invalid host"
   },
   "error_invalid_port": {
-    "message": "Use 1–65535"
+    "message": "Use 1\u201365535"
   },
   "test": {
     "message": "Test"
   },
   "testing": {
-    "message": "Testing…"
+    "message": "Testing\u2026"
   },
   "checking": {
-    "message": "Checking…"
+    "message": "Checking\u2026"
   },
   "save_anyway": {
     "message": "Save anyway"
@@ -159,7 +159,7 @@
     "message": "The proxy returned an error."
   },
   "error_settings_locked": {
-    "message": "Proxy settings are controlled by another extension or a policy, so the proxy can’t be tested."
+    "message": "Proxy settings are controlled by another extension or a policy, so the proxy can\u2019t be tested."
   },
   "connection_section": {
     "message": "Connection"
@@ -208,5 +208,59 @@
   },
   "view_on_github": {
     "message": "View on GitHub"
+  },
+  "connection_off": {
+    "message": "Proxy off"
+  },
+  "connection_verified": {
+    "message": "Connection verified"
+  },
+  "connection_unverified": {
+    "message": "Connection is not verified"
+  },
+  "recheck": {
+    "message": "Check again"
+  },
+  "resolve_conflict": {
+    "message": "Resolve extension conflict"
+  },
+  "conflict_candidates_hint": {
+    "message": "Enabled extensions with proxy permission are listed below. Chrome does not identify the owner. Choose which extension to disable; it stays disabled until you enable it again in chrome://extensions."
+  },
+  "conflict_no_candidates": {
+    "message": "No enabled proxy extensions found. Review chrome://extensions and browser policies."
+  },
+  "conflict_action_failed": {
+    "message": "Could not change extension control. Check permissions or open chrome://extensions."
+  },
+  "disable_extension": {
+    "message": "Disable $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Other Proxy"
+      }
+    }
+  },
+  "error_apply_failed": {
+    "message": "Chrome could not apply or restore the proxy settings. Try again."
+  },
+  "error_verification_failed": {
+    "message": "No check service could be reached through the configured proxy. The connection is not verified; it will be checked again automatically."
+  },
+  "error_no_probe_route": {
+    "message": "The bypass rules send all check services directly. Adjust the rules to verify this connection."
+  },
+  "error_test_busy": {
+    "message": "Another proxy check is running. Try again when it finishes."
+  },
+  "error_test_cancelled": {
+    "message": "The proxy settings changed during the check. Test again."
+  },
+  "error_test_routing": {
+    "message": "A separate test cannot preserve the current system, automatic or complex bypass routing. Save the proxy, then turn it on to verify the actual connection."
+  },
+  "connection_conflict": {
+    "message": "Proxy control is unavailable"
   }
 }

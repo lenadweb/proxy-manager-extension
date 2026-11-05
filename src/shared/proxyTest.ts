@@ -1,4 +1,5 @@
 import { ProxyProfile } from 'src/shared/types';
+import { isValidProfile } from './validation';
 
 export enum ProxyTestStatus {
     Passed = 'passed',
@@ -10,6 +11,9 @@ export enum ProxyTestFailure {
     AuthRejected = 'auth_rejected',
     SettingsLocked = 'settings_locked',
     Network = 'network',
+    Busy = 'busy',
+    Cancelled = 'cancelled',
+    UnsupportedRouting = 'unsupported_routing',
 }
 
 export type PassedProxyTest = {
@@ -29,6 +33,9 @@ export type ProxyTestResult = PassedProxyTest | FailedProxyTest;
 
 export enum MessageType {
     TestProxy = 'test-proxy',
+    CheckConnection = 'check-connection',
+    ListProxyExtensions = 'list-proxy-extensions',
+    TakeProxyControl = 'take-proxy-control',
 }
 
 export type TestProxyMessage = {
@@ -51,7 +58,9 @@ export const isTestProxyMessage = (
     typeof message === 'object' &&
     message !== null &&
     'type' in message &&
-    message.type === MessageType.TestProxy;
+    message.type === MessageType.TestProxy &&
+    'proxy' in message &&
+    isValidProfile(message.proxy);
 
 export const requestProxyTest = async (
     proxy: ProxyProfile
@@ -59,10 +68,14 @@ export const requestProxyTest = async (
     const message: TestProxyMessage = { type: MessageType.TestProxy, proxy };
 
     try {
-        return await chrome.runtime.sendMessage<
+        const result = await chrome.runtime.sendMessage<
             TestProxyMessage,
             ProxyTestResult
         >(message);
+        return result?.status === ProxyTestStatus.Passed ||
+            result?.status === ProxyTestStatus.Failed
+            ? result
+            : failedTest(ProxyTestFailure.Network);
     } catch {
         return failedTest(ProxyTestFailure.Network);
     }

@@ -1,5 +1,8 @@
 import { FC } from 'react';
 import { ProxyProfile } from 'src/shared/types';
+import { ConnectionStatus as Status } from 'src/shared/connection';
+import { useConnection } from 'src/popup/hooks/useConnection';
+import ConnectionStatus from 'src/popup/components/ConnectionStatus';
 import {
     deleteProxy,
     saveProxy,
@@ -24,6 +27,7 @@ const runAction = (action: Promise<void>): void => {
 const App: FC = () => {
     const state = useProxyState();
     const control = useProxyControl();
+    const connection = useConnection(state, control);
     const [popupState, setPopupState] = usePopupState();
     useActionIconSync(state?.proxies);
 
@@ -53,12 +57,18 @@ const App: FC = () => {
                 <>
                     <Header
                         isEnabled={state.isEnabled}
+                        isConnected={connection.status === Status.Connected}
                         canToggle={state.proxies.length > 0}
                         onToggle={() => runAction(toggleEnabled(state))}
                     />
                     <Notice state={state} control={control} />
+                    <ConnectionStatus
+                        connection={connection}
+                        isEnabled={state.isEnabled}
+                    />
                     <ProxyList
                         state={state}
+                        connection={connection}
                         onAdd={() => openForm(null)}
                         onToggle={(proxy) =>
                             runAction(toggleProxy(state, proxy.id))

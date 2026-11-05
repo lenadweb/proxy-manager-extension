@@ -6,6 +6,7 @@ import {
     RenderedActionIcon,
 } from 'src/shared/actionIcons';
 import { ProxyProfile } from 'src/shared/types';
+import { ConnectionStatus } from 'src/shared/connection';
 
 const DEFAULT_ICON_PATHS: Record<ActionIconSize, string> = {
     16: 'icons/16.png',
@@ -51,22 +52,35 @@ const findRenderedIcon = async (
 };
 
 const setBadge = async (text: string): Promise<void> => {
-    await chrome.action.setBadgeBackgroundColor({ color: BADGE_BACKGROUND });
+    await chrome.action.setBadgeBackgroundColor({
+        color: text === '!' ? '#DC2626' : BADGE_BACKGROUND,
+    });
     await chrome.action.setBadgeTextColor({ color: BADGE_TEXT_COLOR });
     await chrome.action.setBadgeText({ text });
 };
 
 export const updateActionIcon = async (
-    proxy: ProxyProfile | null
+    proxy: ProxyProfile | null,
+    status = ConnectionStatus.Disconnected
 ): Promise<void> => {
+    const connected = proxy !== null && status === ConnectionStatus.Connected;
+    const badge = connected
+        ? BADGE_TEXT_ON
+        : status === ConnectionStatus.Connecting
+          ? '…'
+          : status === ConnectionStatus.Error ||
+              status === ConnectionStatus.Conflict
+            ? '!'
+            : '';
+    await chrome.action.setTitle({ title: `Proxy Manager: ${status}` });
     const rendered = await findRenderedIcon(proxy);
 
     if (rendered) {
         await chrome.action.setIcon({ imageData: await toImageData(rendered) });
-        await setBadge('');
+        await setBadge(badge);
         return;
     }
 
     await chrome.action.setIcon({ path: DEFAULT_ICON_PATHS });
-    await setBadge(proxy ? BADGE_TEXT_ON : '');
+    await setBadge(badge);
 };

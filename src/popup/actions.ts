@@ -1,9 +1,9 @@
-import { getActiveProxy, isProxyConnected } from 'src/shared/proxy';
+import { getActiveProxy, isProxySelected } from 'src/shared/proxy';
 import { saveState } from 'src/shared/storage';
 import { ProxyProfile, ProxyState } from 'src/shared/types';
 
 export const toggleProxy = (state: ProxyState, id: string): Promise<void> =>
-    isProxyConnected(state, id)
+    isProxySelected(state, id)
         ? saveState({ isEnabled: false })
         : saveState({ activeId: id, isEnabled: true });
 

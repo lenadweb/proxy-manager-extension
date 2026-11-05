@@ -22,9 +22,14 @@
     "proxy",
     "storage",
     "webRequest",
-    "webRequestAuthProvider"
+    "webRequestAuthProvider",
+    "alarms"
   ],
   "host_permissions": [
     "<all_urls>"
-  ]
+  ],
+  "optional_permissions": [
+    "management"
+  ],
+  "minimum_chrome_version": "120"
 }

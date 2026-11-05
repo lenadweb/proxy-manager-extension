@@ -1,20 +1,29 @@
 import { FC } from 'react';
 import { t } from 'src/shared/i18n';
-import { isProxyConnected } from 'src/shared/proxy';
+import { isProxySelected } from 'src/shared/proxy';
 import { ProxyProfile, ProxyState } from 'src/shared/types';
 import { Plus } from 'lucide-react';
+import { ConnectionState, ConnectionStatus } from 'src/shared/connection';
 import EmptyState from './EmptyState';
 import ProxyCard from './ProxyCard';
 
 type Props = {
     state: ProxyState;
+    connection?: ConnectionState;
     onAdd: () => void;
     onToggle: (proxy: ProxyProfile) => void;
     onEdit: (proxy: ProxyProfile) => void;
     onDelete: (proxy: ProxyProfile) => void;
 };
 
-const ProxyList: FC<Props> = ({ state, onAdd, onToggle, onEdit, onDelete }) => {
+const ProxyList: FC<Props> = ({
+    state,
+    connection,
+    onAdd,
+    onToggle,
+    onEdit,
+    onDelete,
+}) => {
     const hasProxies = state.proxies.length > 0;
 
     return (
@@ -40,7 +49,12 @@ const ProxyList: FC<Props> = ({ state, onAdd, onToggle, onEdit, onDelete }) => {
                         <ProxyCard
                             key={proxy.id}
                             proxy={proxy}
-                            isConnected={isProxyConnected(state, proxy.id)}
+                            isSelected={isProxySelected(state, proxy.id)}
+                            isConnected={
+                                isProxySelected(state, proxy.id) &&
+                                connection?.status ===
+                                    ConnectionStatus.Connected
+                            }
                             onToggle={() => onToggle(proxy)}
                             onEdit={() => onEdit(proxy)}
                             onDelete={() => onDelete(proxy)}

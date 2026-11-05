@@ -14,6 +14,7 @@ import DeleteConfirmation from './DeleteConfirmation';
 type Props = {
     proxy: ProxyProfile;
     isConnected: boolean;
+    isSelected: boolean;
     onToggle: () => void;
     onEdit: () => void;
     onDelete: () => void;
@@ -22,12 +23,13 @@ type Props = {
 const ProxyCard: FC<Props> = ({
     proxy,
     isConnected,
+    isSelected,
     onToggle,
     onEdit,
     onDelete,
 }) => {
     const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
-    const toggleLabel = t(isConnected ? 'disconnect' : 'connect');
+    const toggleLabel = t(isSelected ? 'disconnect' : 'connect');
 
     if (isConfirmingDelete) {
         return (
@@ -50,7 +52,7 @@ const ProxyCard: FC<Props> = ({
             <button
                 type="button"
                 onClick={onToggle}
-                aria-pressed={isConnected}
+                aria-pressed={isSelected}
                 aria-label={`${toggleLabel} ${proxy.name}`}
                 className="flex min-w-0 flex-1 cursor-pointer items-center gap-3 rounded-2xl py-1 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             >
@@ -97,7 +99,7 @@ const ProxyCard: FC<Props> = ({
                 </div>
                 <span className="px-2">
                     <Switch
-                        isOn={isConnected}
+                        isOn={isSelected}
                         label={toggleLabel}
                         onToggle={onToggle}
                     />

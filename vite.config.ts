@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import svgr from 'vite-plugin-svgr';
 import zipPack from 'vite-plugin-zip-pack';
-import { version } from './package.json';
+import { version } from './package.json' with { type: 'json' };
 
 const rootDir = resolve(import.meta.dirname, 'src');
 const outDir = resolve(import.meta.dirname, 'dist');

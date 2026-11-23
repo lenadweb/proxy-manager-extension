@@ -1,0 +1,8 @@
+{
+    "appName": {
+        "message": "Proxy Manager: HTTP・HTTPS・SOCKS5プロキシ管理"
+    },
+    "appDescription": {
+        "message": "ワンクリックでプロキシを切り替え。認証情報の保存、接続テスト、除外ルールの設定に対応。アカウント不要、広告なし。"
+    }
+}

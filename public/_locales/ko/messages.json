@@ -1,0 +1,8 @@
+{
+    "appName": {
+        "message": "Proxy Manager: HTTP, HTTPS, SOCKS5 프록시 관리"
+    },
+    "appDescription": {
+        "message": "클릭 한 번으로 프록시를 전환하세요. 로그인 정보 저장, 연결 테스트, 예외 규칙 설정을 지원합니다. 계정과 광고가 없습니다."
+    }
+}

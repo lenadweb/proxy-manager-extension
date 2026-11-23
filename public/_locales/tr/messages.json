@@ -1,0 +1,8 @@
+{
+    "appName": {
+        "message": "Proxy Manager: HTTP, HTTPS ve SOCKS5 proxy yöneticisi"
+    },
+    "appDescription": {
+        "message": "Tek tıkla proxy değiştirin. Giriş bilgilerini kaydedin, bağlantıları test edin ve istisnalar belirleyin. Hesap ve reklam yok."
+    }
+}

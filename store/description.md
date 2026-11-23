@@ -52,7 +52,7 @@ Bring your own proxies. Proxy Manager does not sell or include proxy servers. It
 • Open source: the code is public, so you can check exactly what the extension does.
 • No account, no sign up, no ads, no analytics, no tracking.
 • Your proxies and passwords are stored only in the extension's local storage in your browser and are never sent to the developer.
-• Proxy Manager contacts the network on its own only through your proxy: one sign-in request when you connect to a proxy with a password, and the proxy checks you start, which ask Cloudflare, Amazon AWS, ipinfo.io and ipify for the exit IP address.
+• Connection checks run when you enable a proxy, after browser or worker restarts, every minute while enabled, after certain proxy errors, and when you request a check. They use Cloudflare, Amazon AWS, ipinfo.io and ipify to verify connectivity and report the exit IP and latency. Proxy tests can also report the country. Credentials are sent only to the matching proxy when it requests authentication.
 • A half-filled form is remembered, so switching windows never loses your input.
 
 👩‍💻 Who it is for
@@ -71,5 +71,7 @@ Chrome does not support authentication for SOCKS proxies, so SOCKS4 and SOCKS5 p
 
 Does it work alongside other proxy extensions?
 Chrome lets only one extension control the proxy at a time. If another extension takes over, Proxy Manager tells you so and explains how to fix it.
+
+The extension interface is in English. This translation covers the store listing only.
 
 Install Proxy Manager and switch between your proxies in one click.

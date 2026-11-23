@@ -1,0 +1,8 @@
+{
+    "appName": {
+        "message": "Proxy Manager: beheer HTTP-, HTTPS- en SOCKS5-proxy’s"
+    },
+    "appDescription": {
+        "message": "Wissel proxy met één klik. Bewaar inloggegevens, test verbindingen en stel uitzonderingen in. Zonder account of advertenties."
+    }
+}

@@ -67,6 +67,28 @@ Everything for the Chrome Web Store lives in `store/`:
 | `store/assets/`        | Two screenshots, marquee and small promo tile            |
 | `store/promo/`         | Generator that renders the real popup into the store art |
 
+The store listing supports 20 locales (including the English default): `en`,
+`ar`, `de`, `es`, `fr`, `hi`, `id`, `it`, `ja`, `ko`, `nl`, `pl`, `pt_BR`, `ru`,
+`th`, `tr`, `uk`, `vi`, `zh_CN` and `zh_TW`.
+
+English copy is maintained in `store/description.md`; translated names, summaries
+and full descriptions live in `store/locales/<locale>.md`. After editing them,
+run `npm run store:sync` to update `appName` and `appDescription` in
+`public/_locales/<locale>/messages.json`. Run `npm run store:check` to validate
+field lengths and catch metadata that is out of sync; CI runs the same check.
+
+Only the store metadata is localized. The popup and toolbar tooltip remain in
+English through Chrome's default-locale fallback. Each listing makes this clear.
+Existing screenshots and promo assets remain in English. Permission explanations
+in `store/permissions.md` are developer-dashboard answers, not localized listing
+copy.
+
+Upload the built ZIP to the Chrome Web Store to make the packaged locales
+available, then select each language in the Store listing tab and paste its
+`Description` section from the corresponding Markdown file. Full descriptions
+are not uploaded automatically with the extension package. Follow
+[Chrome's listing localization instructions](https://developer.chrome.com/docs/webstore/cws-dashboard-listing#localize-your-listing).
+
 ```bash
 npm run promo              # render every asset into store/assets
 npm run promo screenshot-2 # render one asset

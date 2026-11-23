@@ -1,0 +1,8 @@
+{
+    "appName": {
+        "message": "Proxy Manager：HTTP、HTTPS 和 SOCKS5 代理管理器"
+    },
+    "appDescription": {
+        "message": "一键切换代理，保存登录信息，测试连接并设置绕过规则。无需账号，没有广告。"
+    }
+}

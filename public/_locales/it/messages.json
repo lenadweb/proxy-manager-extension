@@ -1,0 +1,8 @@
+{
+    "appName": {
+        "message": "Proxy Manager: gestione proxy HTTP, HTTPS e SOCKS5"
+    },
+    "appDescription": {
+        "message": "Cambia proxy con un clic. Salva credenziali, verifica connessioni e imposta eccezioni. Senza account né pubblicità."
+    }
+}

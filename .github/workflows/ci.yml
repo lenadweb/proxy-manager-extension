@@ -19,6 +19,7 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run typecheck
+      - run: npm run store:check
       - run: npx prettier --check .
       - name: Build extension
         run: npm run build
